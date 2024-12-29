@@ -21,6 +21,10 @@ fn target_arch_to_nix(platform: &str, target_arch: &str) -> BoolExpr {
             platform_single(platform, "armv7l"),
         ]),
         "x86" => platform_single(platform, "i686"),
+        "wasm32" => {
+            panic!("{}", platform);
+            platform_single(platform, "wasm")
+        },
         _ => platform_single(platform, target_arch),
     }
 }
