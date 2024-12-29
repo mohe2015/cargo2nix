@@ -21,16 +21,12 @@ fn target_arch_to_nix(platform: &str, target_arch: &str) -> BoolExpr {
             platform_single(platform, "armv7l"),
         ]),
         "x86" => platform_single(platform, "i686"),
-        "wasm32" => {
-            //panic!("{}", platform); hostPlatform
-            platform_single(platform, "wasm")
-        },
         _ => platform_single(platform, target_arch),
     }
 }
 
 fn cfg_to_expr(cfg: &CfgExpr, platform_var: &str) -> BoolExpr {
-    use self::BoolExpr::{False, Single};
+    use self::BoolExpr::{False, Single, True};
     use cargo_platform::Cfg;
 
     match cfg {
@@ -48,6 +44,7 @@ fn cfg_to_expr(cfg: &CfgExpr, platform_var: &str) -> BoolExpr {
                 "{}.parsed.kernel.name == {:?}",
                 platform_var, "darwin"
             )),
+            ("target_os", "unknown") => True,
             ("target_os", v) => Single(format!("{}.parsed.kernel.name == {:?}", platform_var, v)),
             ("target_family", "unix") => Single(format!("{}.isUnix", platform_var)),
             ("target_family", "windows") => Single(format!("{}.isWindows", platform_var)),
